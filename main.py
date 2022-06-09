@@ -1,21 +1,21 @@
 import time
 
-from CalculatorAgent import CalculatorAgent
-from ClientAgent import ClientAgent
-from SumAgent import SumAgent
+from PodcastManagerAgent import PodcastManagerAgent
+from MicrophoneAgent import MicrophoneAgent
+from ServoMotorAgent import ServoMotorAgent
 from config import SERVER
 
 if __name__ == "__main__":
 
-    sum = SumAgent(jid="sumagent" + SERVER, password="password")
+    sum = ServoMotorAgent(jid="servomotoragent" + SERVER, password="password")
     future_sum = sum.start()
     future_sum.result()
 
-    calculator = CalculatorAgent(jid="calculatoragent" + SERVER, password="password")
+    calculator = PodcastManagerAgent(jid="podcastmanageragent" + SERVER, password="password")
     future_calculator = calculator.start()
     future_calculator.result()
 
-    client = ClientAgent(op1=1.0, op2=2.0, jid="c1" + SERVER, password="password")
+    client = MicrophoneAgent(op1=10.0, op2=20.0, jid="m1" + SERVER, password="password")
     future_client = client.start()
     future_client.result()
 

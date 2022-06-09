@@ -8,7 +8,7 @@ from spade.template import Template
 from config import SERVER, IS_DEBUG
 
 
-class CalculatorAgent(Agent):
+class PodcastManagerAgent(Agent):
 
     def __init__(self, jid: str, password: str):
         super().__init__(jid, password)
@@ -20,13 +20,13 @@ class CalculatorAgent(Agent):
     class ReciveBehav(CyclicBehaviour):
         async def run(self):
 
-            msg = await self.receive(timeout=2)  # wait for a message for 10 seconds
+            msg = await self.receive(timeout=200)  # wait for a message for 10 seconds
             if msg:
                 if IS_DEBUG:
                     self.agent.agent_say(msg)
-                if str(msg.sender) == "sumagent" + SERVER or str(msg.sender) == "subtractionAgent" + SERVER \
-                        or str(msg.sender) == "multiplicationAgent" + SERVER \
-                        or str(msg.sender) == "divitionAgent" + SERVER:
+                if str(msg.sender) == "servomotoragent" + SERVER: # or str(msg.sender) == "subtractionAgent" + SERVER \
+                        #or str(msg.sender) == "multiplicationAgent" + SERVER \
+                        #or str(msg.sender) == "divitionAgent" + SERVER:
 
                     msg_object = json.loads(msg.body)
 
@@ -51,20 +51,20 @@ class CalculatorAgent(Agent):
 
 
                     if operation == "+":
-                        service_provider = "sumagent"
-                    elif operation == "-":
-                        service_provider = "subtractionAgent"
-                    elif operation == "*":
-                        service_provider = "multiplicationAgent"
-                    elif operation == "/":
-                        service_provider = "divitionAgent"
+                        service_provider = "servomotoragent"
+                #    elif operation == "-":
+                #        service_provider = "subtractionAgent"
+                #    elif operation == "*":
+                #        service_provider = "multiplicationAgent"
+                #    elif operation == "/":
+                #        service_provider = "divitionAgent"
 
                     new_msg = Message(to=service_provider + SERVER)  # Instantiate the message
                     new_msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
 
                     new_msg_object = {
-                        "op1": 1,
-                        "op2": 2,
+                        "op1": msg_object["op1"],
+                        "op2": msg_object["op2"],
                         "originID": str(msg.sender)
                     }
                     msg_json = json.dumps(new_msg_object)

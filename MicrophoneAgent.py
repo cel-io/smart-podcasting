@@ -9,7 +9,7 @@ from spade.template import Template
 from config import SERVER, IS_DEBUG
 
 
-class ClientAgent(Agent):
+class MicrophoneAgent(Agent):
 
     def __init__(self, op1, op2, jid: str, password: str):
         super().__init__(jid, password)
@@ -22,7 +22,7 @@ class ClientAgent(Agent):
 
     class RequestBehav(OneShotBehaviour):
         async def run(self):
-            new_msg = Message(to="calculatoragent" + SERVER)  # Instantiate the message
+            new_msg = Message(to="podcastmanageragent" + SERVER)  # Instantiate the message
             new_msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
 
             new_msg_object = {
@@ -38,7 +38,7 @@ class ClientAgent(Agent):
     class ReciveBehav(CyclicBehaviour):
         async def run(self):
 
-            msg = await self.receive(timeout=2)  # wait for a message for 5 seconds
+            msg = await self.receive(timeout=200)  # wait for a message for 5 seconds
             if msg:
                 if IS_DEBUG:
                     self.agent.agent_say(msg)

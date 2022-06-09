@@ -8,7 +8,7 @@ from spade.template import Template
 from config import SERVER, IS_DEBUG
 
 
-class SumAgent(Agent):
+class ServoMotorAgent(Agent):
 
     def __init__(self, jid: str, password: str):
         super().__init__(jid, password)
@@ -20,11 +20,11 @@ class SumAgent(Agent):
     class ReciveBehav(CyclicBehaviour):
         async def run(self):
 
-            msg = await self.receive(timeout=2)  # wait for a message for 10 seconds
+            msg = await self.receive(timeout=200)  # wait for a message for 10 seconds
             if msg:
                 if IS_DEBUG:
                     self.agent.agent_say(msg)
-                if str(msg.sender) == "calculatoragent" + SERVER:
+                if str(msg.sender) == "podcastmanageragent" + SERVER:
                     msg_object = json.loads(msg.body)
 
                     new_msg = Message(to=str(msg.sender))  # Instantiate the message
