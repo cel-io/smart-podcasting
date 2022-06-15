@@ -10,51 +10,26 @@ from config import SERVER, IS_DEBUG
 
 
 class MicrophoneAgent(Agent):
-
-    def __init__(self, op1, op2, jid: str, password: str):
+    def __init__(self, jid: str, password: str):
         super().__init__(jid, password)
         self.my_name = jid
-        self.op1 = op1
-        self.op2 = op2
-
+    
     def agent_say(self, text):
         print(self.my_name + ":\n\t" + str(text) + "\n")
 
     class RequestBehav(OneShotBehaviour):
         async def run(self):
-            new_msg = Message(to="podcastmanageragent" + SERVER)  # Instantiate the message
-            new_msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
+            msg = Message(to="podcastmanageragent" + SERVER)     # Instantiate the message
+            msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
+            msg.body = "Microfone X detetado - Rodar camara para Y"                    # Set the message content
 
-            new_msg_object = {
-                "op1": self.agent.op1,
-                "operation": "+",
-                "op2": self.agent.op2
-            }
-            msg_json = json.dumps(new_msg_object)
+            await self.send(msg)
+            print("Message sent to Podcast Manager!\n")
 
-            new_msg.body = msg_json  # Set the message content
-            await self.send(new_msg)
-
-    class ReciveBehav(CyclicBehaviour):
-        async def run(self):
-
-            msg = await self.receive(timeout=200)  # wait for a message for 5 seconds
-            if msg:
-                if IS_DEBUG:
-                    self.agent.agent_say(msg)
-                self.agent.agent_say(
-                    str(self.agent.op1) + " + " + str(self.agent.op2) + " = " + json.loads(msg.body)["result"])
-                self.agent.agent_say("Finishing")
-                await self.agent.stop()
-            else:
-                self.agent.agent_say("Did not received any message after 5 seconds")
-                await self.agent.stop()
-
+            # stop agent from behaviour
+            await self.agent.stop()
+    
     async def setup(self):
-        self.agent_say("Agent starting . . .")
-        requestB = self.RequestBehav()
-        reciveB = self.ReciveBehav()
-        template = Template()
-        template.set_metadata("performative", "inform")
-        self.add_behaviour(requestB, template)
-        self.add_behaviour(reciveB, template)
+        print("Microphone agent started\n")
+        requestBehav = self.RequestBehav()
+        self.add_behaviour(requestBehav)
