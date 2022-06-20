@@ -21,7 +21,7 @@ class MicrophoneAgent(Agent):
         async def run(self):
             msg = Message(to="podcastmanageragent" + SERVER)     # Instantiate the message
             msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
-            msg.body = "Microfone X detetado - Rodar camara para Y"                    # Set the message content
+            msg.body = "Dois microfones detetados"                    # Set the message content
 
             await self.send(msg)
             print("Message sent to Podcast Manager!\n")

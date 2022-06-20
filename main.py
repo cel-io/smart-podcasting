@@ -1,5 +1,6 @@
 import time
 
+from FixedCamAgent import FixedCamAgent
 from MicrophoneAgent import MicrophoneAgent
 from PodcastManagerAgent import PodcastManagerAgent
 from ServoMotorAgent import ServoMotorAgent
@@ -7,6 +8,10 @@ from ServoMotorAgent import ServoMotorAgent
 from config import SERVER
 
 if __name__ == "__main__":
+
+    fixedcam = FixedCamAgent(jid="fixedcamagent" + SERVER, password="password")
+    future_fixedcam = fixedcam.start()
+    future_fixedcam.result()
 
     servo_motor=ServoMotorAgent(jid="servomotoragent" + SERVER, password="password")
     future_servomotor = servo_motor.start()
