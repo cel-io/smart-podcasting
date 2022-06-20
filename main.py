@@ -21,12 +21,12 @@ if __name__ == "__main__":
     future_podcast_manager = podcast_manager.start()
     future_podcast_manager.result()
 
-    microphone = MicrophoneAgent(jid="m1" + SERVER, password="password")
+    microphone = MicrophoneAgent(jid="m1" + SERVER, password="password",posX=0,posY=20)
     future_microphone = microphone.start()
     future_microphone.result()
 
     try:
-        while microphone.is_alive() or podcast_manager.is_alive() or servo_motor.is_alive():
+        while microphone.is_alive() or podcast_manager.is_alive() or servo_motor.is_alive() or fixedcam.is_alive():
             time.sleep(1)
     except KeyboardInterrupt:
         print("Stopping...")

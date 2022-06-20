@@ -6,7 +6,6 @@ import threading
 
 from spade.agent import Agent
 from spade.behaviour import CyclicBehaviour
-from spade.behaviour import OneShotBehaviour
 from spade.message import Message
 from spade.template import Template
 
@@ -38,10 +37,8 @@ def camPreview(previewName, camID):
             break
     cv2.destroyWindow(previewName)
 
-
-    thread1 = camThread("Camera 1", 0)
-
 class FixedCamAgent(Agent):
+    
     def __init__(self, jid: str, password: str):
         super().__init__(jid, password)
         self.my_name = jid
@@ -49,11 +46,12 @@ class FixedCamAgent(Agent):
     def agent_say(self, text):
         print(self.my_name + ":\n\t" + str(text) + "\n")
 
-    class RecieveBehav(OneShotBehaviour):
+    class RecieveBehav(CyclicBehaviour):
         async def run(self):
             msg = await self.receive(timeout=100) # wait for a message for 10 seconds
             if msg:
                 print("Fixed Cam: Message received with content: {}\n".format(msg.body))
+                thread1 = camThread("Camera 1", 0)
                 thread1.start()
             else:
                 print("Did not received any message after 10 seconds")

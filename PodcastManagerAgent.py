@@ -23,6 +23,7 @@ class PodcastManagerAgent(Agent):
             if(msg2):
                 print("PodcastManager: Reiceved message: " + msg2.body + "\n")
 
+                #Dois ou mais microfones
                 if(msg2.body=="Dois microfones detetados"):
                     msg = Message(to="fixedcamagent" + SERVER)     # Instantiate the message
                     msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
@@ -33,14 +34,24 @@ class PodcastManagerAgent(Agent):
                     await self.send(msg)
                     print("Message sent to Fixed Cam!\n")
 
+                #Apenas um microfone
                 else:
-                    msg = Message(to="servomotoragent" + SERVER)     # Instantiate the message
-                    msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
+
+                    new_msg_object = json.loads(msg2.body)
+
+                    new_msg = Message(to="servomotoragent" + SERVER)     # Instantiate the message
+                    new_msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
+
+                    msg_json = json.dumps(new_msg_object)
+                    #posX = int(msg_object["posX"])
+                    #posY = int(msg_object["posY"])
 
                     print("Sending message to ServoMotor. \n")
-                    msg.body = msg2.body                  # Set the message content
+                    #msg.body = msg2.body                  # Set the message content
 
-                    await self.send(msg)
+                    new_msg.body=msg_json # Set the message content
+
+                    await self.send(new_msg)
                     print("Message sent to Servo Motor!\n")
 
                 # stop agent from behaviour
