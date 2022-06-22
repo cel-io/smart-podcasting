@@ -13,15 +13,18 @@ if __name__ == "__main__":
     future_fixedcam = fixedcam.start()
     future_fixedcam.result()
 
-    servo_motor=ServoMotorAgent(jid="servomotoragent" + SERVER, password="password")
+    servo_motor = ServoMotorAgent(
+        jid="servomotoragent" + SERVER, password="password")
     future_servomotor = servo_motor.start()
     future_servomotor.result()
 
-    podcast_manager = PodcastManagerAgent(jid="podcastmanageragent" + SERVER, password="password")
+    podcast_manager = PodcastManagerAgent(
+        jid="podcastmanageragent" + SERVER, password="password")
     future_podcast_manager = podcast_manager.start()
     future_podcast_manager.result()
 
-    microphone = MicrophoneAgent(jid="m1" + SERVER, password="password",posX=0,posY=20)
+    microphone = MicrophoneAgent(
+        jid="m1" + SERVER, password="password", pos=30)
     future_microphone = microphone.start()
     future_microphone.result()
 
@@ -30,4 +33,4 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         print("Stopping...")
-    #microphone.stop()
+    # microphone.stop()

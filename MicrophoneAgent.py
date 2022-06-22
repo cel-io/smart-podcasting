@@ -9,42 +9,33 @@ from config import SERVER, IS_DEBUG
 
 
 class MicrophoneAgent(Agent):
-    def __init__(self, jid: str, password: str, posX, posY):
+    def __init__(self, jid: str, password: str, pos):
         super().__init__(jid, password)
         self.my_name = jid
-        self.posX = posX
-        self.posY = posY
-    
-    def agent_say(self, text):
-        print(self.my_name + ":\n\t" + str(text) + "\n")
+        self.pos = pos
 
     class RequestBehav(CyclicBehaviour):
+        def set_pos(self, pos):
+            self.pos = pos
+
         async def run(self):
-            #msg = Message(to="podcastmanageragent" + SERVER)     # Instantiate the message
-            msg2 = Message(to="podcastmanageragent" + SERVER)     # Instantiate the message
+            test = Message(to="podcastmanageragent" + SERVER)
+            test.set_metadata("performative", "inform")
 
-            #msg.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
-            msg2.set_metadata("performative", "inform")  # Set the "inform" FIPA performative
+            body = {
+                "type": "camera_position",
+                "pos": self.pos
+            }
 
-            msg2.body="Dois microfones detetados"
-
-            #new_msg_object = {
-            #    "posX": self.agent.posX,
-            #    "posY": self.agent.posY
-            #}                  
-
-            #msg_json = json.dumps(new_msg_object)
-
-            #msg.body=msg_json
-
-            #await self.send(msg)
-            await self.send(msg2)
+            test.body = json.dumps(body)
+            await self.send(test)
             print("Message sent to Podcast Manager!\n")
 
             # stop agent from behaviour
             await self.agent.stop()
-    
+
     async def setup(self):
         print("Microphone agent started\n")
         requestBehav = self.RequestBehav()
+        requestBehav.set_pos(self.pos)
         self.add_behaviour(requestBehav)
