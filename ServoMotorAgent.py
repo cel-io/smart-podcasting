@@ -1,4 +1,5 @@
 import json
+from socket import timeout
 import cv2
 import serial
 import time
@@ -29,7 +30,7 @@ def on_connect(client, userdata, flags, rc):
         print("Failed to connect, return code %d\n", rc)
 
 
-def openCamera():
+def update_camera():
     # We need another client_mqtt since this is ran in another process
     client_mqtt = mqtt_client.Client(client_id)
     client_mqtt.on_connect = on_connect
@@ -83,8 +84,11 @@ class ServoMotorAgent(Agent):
             super().__init__()
             self.client_mqtt = client_mqtt
 
+        async def on_start(self):
+            camera_process = Process(target=update_camera)
+            camera_process.start()
+
         async def run(self):
-            # wait for a message for 10 seconds
             msg = await self.receive(timeout=100)
 
             if msg is None:
@@ -97,13 +101,7 @@ class ServoMotorAgent(Agent):
                 self.client_mqtt.publish(
                     position_topic, str(body["pos"]).encode())
 
-            # stop agent from behaviour
-            await self.agent.stop()
-
     async def setup(self):
         print("Servo Motor agent started\n")
         receiveBehav = self.RecvBehav(self.client_mqtt)
         self.add_behaviour(receiveBehav)
-
-        camera_process = Process(target=openCamera)
-        camera_process.start()
