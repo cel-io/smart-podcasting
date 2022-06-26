@@ -1,13 +1,19 @@
 import time
+import subprocess
+import sys
 
 from FixedCamAgent import FixedCamAgent
-from MicrophoneAgent import MicrophoneAgent
 from PodcastManagerAgent import PodcastManagerAgent
 from ServoMotorAgent import ServoMotorAgent
+from MicrophoneAgent import MicrophoneAgent
 
 from config import SERVER
 
 if __name__ == "__main__":
+    podcast_manager = PodcastManagerAgent(
+        jid="podcastmanageragent" + SERVER, password="password")
+    future_podcast_manager = podcast_manager.start()
+    future_podcast_manager.result()
 
     fixedcam = FixedCamAgent(jid="fixedcamagent" + SERVER, password="password")
     future_fixedcam = fixedcam.start()
@@ -18,29 +24,20 @@ if __name__ == "__main__":
     future_servomotor = servo_motor.start()
     future_servomotor.result()
 
-    podcast_manager = PodcastManagerAgent(
-        jid="podcastmanageragent" + SERVER, password="password")
-    future_podcast_manager = podcast_manager.start()
-    future_podcast_manager.result()
+    mic1_p = subprocess.Popen(
+        [sys.executable, "./mic_launch.py", "m1", "150", "True", '"Conjunto de microfones (Realtek"', "20", "2"])
 
-    microphone1 = MicrophoneAgent(
-        jid="m1" + SERVER, password="password", pos=30)
-    future_microphone = microphone1.start()
-    future_microphone.result()
+    mic2_p = subprocess.Popen(
+        [sys.executable, "./mic_launch.py", "m2", "90", "False", '"Microfone (2- USB Audio Device) DirectSound"', "20", "2"])
 
-    microphone2 = MicrophoneAgent(
-        jid="m2" + SERVER, password="password", pos=90)
-    future_microphone = microphone2.start()
-    future_microphone.result()
-
-    microphone3 = MicrophoneAgent(
-        jid="m3" + SERVER, password="password", pos=150, initial_pos=True)
-    future_microphone = microphone3.start()
-    future_microphone.result()
+    mic3_p = subprocess.Popen(
+        [sys.executable, "./mic_launch.py", "m3", "20", "False", '"Auscultadores com Microfone (Jabra EVOLVE 30 II) DirectSound"', "20", "2"])
 
     try:
-        while microphone1.is_alive() or microphone2.is_alive() or microphone3.is_alive() or podcast_manager.is_alive() or servo_motor.is_alive() or fixedcam.is_alive():
+        while podcast_manager.is_alive() or servo_motor.is_alive() or fixedcam.is_alive():
             time.sleep(1)
     except KeyboardInterrupt:
         print("Stopping...")
-    # microphone.stop()
+        # mic1_p.kill()
+        # mic2_p.kill()
+        # mic3_p.kill()
