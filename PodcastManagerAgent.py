@@ -26,13 +26,12 @@ class PodcastManagerAgent(Agent):
 
             body = json.loads(msg.body)
 
-            print("PodcastManager received " + body["type"] + " message")
             if body["type"] == "camera_position":
                 if body["pos"] != self.current_pos:
-                    test = Message(to="servomotoragent" + SERVER)
-                    test.body = msg.body
+                    send_msg = Message(to="servomotoragent" + SERVER)
+                    send_msg.body = msg.body
 
-                    await self.send(test)
+                    await self.send(send_msg)
 
                     self.current_pos = body["pos"]
 

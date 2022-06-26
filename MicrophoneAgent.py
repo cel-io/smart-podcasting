@@ -30,12 +30,13 @@ class MicrophoneAgent(Agent):
                 callback=self.check_sound, device=device_id, channels=channels)
             self.detected_voice = False
 
-        async def send_position(self):
+        async def send_position(self, initial_pos):
             msg = Message(to="podcastmanageragent" + SERVER)
 
             body = {
                 "type": "camera_position",
-                "pos": self.pos
+                "pos": self.pos,
+                "initial_pos": initial_pos
             }
 
             msg.body = json.dumps(body)
@@ -48,20 +49,19 @@ class MicrophoneAgent(Agent):
 
         async def on_start(self):
             if self.initial_pos:
-                await self.send_position()
+                await self.send_position(True)
             self.mic_stream.start()
 
         async def run(self):
             sd.sleep(250)
             if self.detected_voice:
-                await self.send_position()
+                await self.send_position(False)
                 self.detected_voice = False
                 sd.sleep(2000)
 
         async def on_end(self) -> None:
             self.mic_stream.stop()
             self.mic_stream.close()
-            return await super().on_end()
 
     async def setup(self):
         print("Microphone agent started\n")

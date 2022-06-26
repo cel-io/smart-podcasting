@@ -10,56 +10,48 @@ from spade.message import Message
 from spade.template import Template
 
 
-from config import SERVER, IS_DEBUG
-
-
 class camThread(threading.Thread):
-    def __init__(self, previewName, camID):
+    def __init__(self, preview_name, cam_id):
         threading.Thread.__init__(self)
-        self.previewName = previewName
-        self.camID = camID
+        self.preview_name = preview_name
+        self.cam_id = cam_id
 
     def run(self):
-        print("Starting" + self.previewName)
-        camPreview(self.previewName, self.camID)
+        print("Starting" + self.preview_name)
+        camPreview(self.preview_name, self.cam_id)
 
 
-def camPreview(previewName, camID):
-    cv2.namedWindow(previewName)
-    cam = cv2.VideoCapture(camID)
+def camPreview(preview_name, cam_id):
+    cv2.namedWindow(preview_name)
+    cam = cv2.VideoCapture(cam_id)
     if cam.isOpened():  # try to get the first frame
         rval, frame = cam.read()
     else:
         rval = False
 
+    cv2.moveWindow('Fixed Cam', 40, 50)
+
     while rval:
-        cv2.imshow(previewName, frame)
+        cv2.imshow(preview_name, frame)
         rval, frame = cam.read()
         key = cv2.waitKey(20)
         if key == 27:  # exit on ESC
             break
-    cv2.destroyWindow(previewName)
+    cv2.destroyWindow(preview_name)
 
 
 class FixedCamAgent(Agent):
 
     def __init__(self, jid: str, password: str):
         super().__init__(jid, password)
-        self.my_name = jid
-
-    def agent_say(self, text):
-        print(self.my_name + ":\n\t" + str(text) + "\n")
 
     class RecieveBehav(CyclicBehaviour):
+        async def on_start(self) -> None:
+            cam_thread = camThread("Fixed Cam", 0)
+            cam_thread.start()
+
         async def run(self):
-            # wait for a message for 10 seconds
-            msg = await self.receive(timeout=100)
-            if msg:
-                print("Fixed Cam: Message received with content: {}\n".format(msg.body))
-                thread1 = camThread("Camera 1", 0)
-                thread1.start()
-            else:
-                print("Did not received any message after 10 seconds")
+            pass
 
     async def setup(self):
         print("Fixed Cam agent started\n")
