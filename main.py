@@ -28,10 +28,10 @@ if __name__ == "__main__":
         [sys.executable, "./mic_launch.py", "m1", "150", "False", '"Conjunto de microfones (Realtek"', "20", "2"])
 
     mic2_p = subprocess.Popen(
-        [sys.executable, "./mic_launch.py", "m2", "90", "False", '"Microfone (2- USB Audio Device) DirectSound"', "20", "2"])
+        [sys.executable, "./mic_launch.py", "m2", "90", "True", '"Microfone (2- USB Audio Device) DirectSound"', "20", "2"])
 
     mic3_p = subprocess.Popen(
-        [sys.executable, "./mic_launch.py", "m3", "30", "True", '"Auscultadores com Microfone (Jabra EVOLVE 30 II) DirectSound"', "20", "2"])
+        [sys.executable, "./mic_launch.py", "m3", "30", "False", '"Auscultadores com Microfone (Jabra EVOLVE 30 II) DirectSound"', "20", "2"])
 
     try:
         while podcast_manager.is_alive() or servo_motor.is_alive() or fixedcam.is_alive():

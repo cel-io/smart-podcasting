@@ -118,8 +118,6 @@ class ServoMotorAgent(Agent):
 
                 if self.is_showing_cam is False and body["initial_pos"] is False:
                     await self.show_cam()
-            elif body["type"] == "camera_show":
-                await self.show_cam()
             elif body["type"] == "camera_hide":
                 await self.hide_cam()
 
