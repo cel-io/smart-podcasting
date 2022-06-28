@@ -25,19 +25,19 @@ if __name__ == "__main__":
     future_servomotor.result()
 
     mic1_p = subprocess.Popen(
-        [sys.executable, "./mic_launch.py", "m1", "150", "False", '"Conjunto de microfones (Realtek"', "20", "2"])
+        [sys.executable, "./mic_launch.py", "m1", "140", "False", '"Conjunto de microfones (Realtek"', "10", "2"])
 
     mic2_p = subprocess.Popen(
         [sys.executable, "./mic_launch.py", "m2", "90", "True", '"Microfone (2- USB Audio Device) DirectSound"', "20", "2"])
 
     mic3_p = subprocess.Popen(
-        [sys.executable, "./mic_launch.py", "m3", "30", "False", '"Auscultadores com Microfone (Jabra EVOLVE 30 II) DirectSound"', "20", "2"])
+        [sys.executable, "./mic_launch.py", "m3", "50", "False", '"Auscultadores com Microfone (Jabra EVOLVE 30 II) DirectSound"', "20", "2"])
 
     try:
         while podcast_manager.is_alive() or servo_motor.is_alive() or fixedcam.is_alive():
             time.sleep(1)
     except KeyboardInterrupt:
         print("Stopping...")
-        # mic1_p.kill()
-        # mic2_p.kill()
-        # mic3_p.kill()
+        mic1_p.kill()
+        mic2_p.kill()
+        mic3_p.kill()
